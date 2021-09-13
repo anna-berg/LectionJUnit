@@ -5,17 +5,28 @@ import java.util.List;
 
 public class Port extends Thread {
     static List<Integer> containersInPort = new ArrayList<>();
-    private final Pier pier;
+    private static volatile Port port;
     private final Ship ship;
 
-    public Port(Pier pier, Ship ship) {
-        this.pier = pier;
+    private Port(Ship ship) {
         this.ship = ship;
+    }
+
+    public static Port getPort(Ship ship){
+        Port rezult = port;
+        if (rezult != null){
+            return rezult;
+        }
+        synchronized (Port.class){
+            if (port == null){
+                port = new Port(ship);
+            }
+            return port;
+        }
     }
 
     public void upLoadContainers(List <Integer> containerstoUpload){
         synchronized (ship){
-            synchronized (pier){
                 for (int i = 0; i < containerstoUpload.size(); i++) {
                     if(ship.getContainersInShip().size() < ship.getShipCapacity()) {
                         ship.setContainersInShip(containerstoUpload.remove(i));
@@ -24,16 +35,13 @@ public class Port extends Thread {
                         System.out.println("Ship is full!");
                     }
                 }
-            }
         }
     }
 
     public synchronized void downLoadContainers(int count){
         synchronized (ship) {
-            synchronized (pier) {
-                for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++) {
                     Port.containersInPort.add(ship.removeContainersFromShip(i));
-                }
             }
         }
     }
@@ -43,4 +51,10 @@ public class Port extends Thread {
         downLoadContainers(count);
     }
 
+    @Override
+    public String toString() {
+        return "Port{" +
+                "ship=" + ship +
+                '}';
+    }
 }

@@ -39,9 +39,12 @@ public class PortRunner {
             thread.join();
         }
 
-        Port port = new Port(new Pier(), new Ship(piers, 5, Arrays.asList(5, 25, 10)));
+        Port port = Port.getPort(new Ship(piers, 5, Arrays.asList(5, 25, 10)));
+        System.out.println(port);
+
+/*        Port port = new Port(new Pier(), new Ship(piers, 5, Arrays.asList(5, 25, 10)));
         port.start();
-        port.downLoadContainers(2);
+        port.downLoadContainers(2);*/
 
     }
 }
