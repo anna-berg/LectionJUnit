@@ -2,9 +2,14 @@ package concurrent.port;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Port extends Thread {
-    static List<Integer> containersInPort = new ArrayList<>();
+
+    //capacity - вместимость порта
+    static BlockingQueue<Integer> containersInPort = new ArrayBlockingQueue<>(200, true, List.of(
+            5,3,1,4,34,56,45));
     private static volatile Port port;
     private final Ship ship;
 
@@ -23,32 +28,6 @@ public class Port extends Thread {
             }
             return port;
         }
-    }
-
-    public void upLoadContainers(List <Integer> containerstoUpload){
-        synchronized (ship){
-                for (int i = 0; i < containerstoUpload.size(); i++) {
-                    if(ship.getContainersInShip().size() < ship.getShipCapacity()) {
-                        ship.setContainersInShip(containerstoUpload.remove(i));
-                        System.out.println("In to ship: " + ship.toString() + " upload " + containerstoUpload.size() + " containers!");
-                    } else {
-                        System.out.println("Ship is full!");
-                    }
-                }
-        }
-    }
-
-    public synchronized void downLoadContainers(int count){
-        synchronized (ship) {
-            for (int i = 0; i < count; i++) {
-                    Port.containersInPort.add(ship.removeContainersFromShip(i));
-            }
-        }
-    }
-
-    public synchronized void uploadAndDownloadContainers(List<Integer> containersToUpload, int count){
-        upLoadContainers(containersToUpload);
-        downLoadContainers(count);
     }
 
     @Override
