@@ -37,11 +37,11 @@ public class Ship implements Runnable {
 
             Pier pier = piers.take();
             System.out.println(Thread.currentThread().getName() + " in a port " + pier);
-            int freeSpaceInPort = Port.containersCapacity.incrementAndGet() - Port.currentContainersCount.incrementAndGet();
+            int freeSpaceInPort = PortRunner.containersCapacity.incrementAndGet() - PortRunner.currentContainersCount.incrementAndGet();
             while (containersToUnload != 0 && freeSpaceInPort > containersToUnload){
                 containersToUnload--;
                 unloadedCounter.incrementAndGet();
-                Port.currentContainersCount.incrementAndGet();
+                PortRunner.currentContainersCount.incrementAndGet();
             }
             System.out.println(unloadedCounter + " container unload from the ship " + Thread.currentThread().getName());
 
